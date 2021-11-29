@@ -4,20 +4,21 @@ import (
 	"net/http"
 
 	"github.com/basheer-shahrour/gin-server/controller"
+	"github.com/basheer-shahrour/gin-server/database"
 	"github.com/basheer-shahrour/gin-server/repository"
 	"github.com/basheer-shahrour/gin-server/service"
 	"github.com/gin-gonic/gin"
 )
 
 var (
-	userRepository repository.UserRepository = repository.NewUserRepository()
+	userRepository repository.UserRepository = repository.NewUserRepository(database.Database)
 	userService    service.UserService       = service.NewUserService(userRepository)
 	userController controller.UserController = controller.NewUserController(userService)
 )
 
 func main() {
 
-	defer userRepository.CloseDB()
+	defer database.Close()
 
 	server := gin.Default()
 

@@ -16,19 +16,19 @@ type UserController interface {
 	ShowAll(ctx *gin.Context)
 }
 
-type controller struct {
+type userController struct {
 	service service.UserService
 }
 
 func NewUserController(service service.UserService) UserController {
-	return &controller{service: service}
+	return &userController{service: service}
 }
 
-func (c *controller) FindAll() []entity.User {
+func (c *userController) FindAll() []entity.User {
 	return c.service.FindAll()
 }
 
-func (c *controller) Save(ctx *gin.Context) error {
+func (c *userController) Save(ctx *gin.Context) error {
 	var user entity.User
 	err := ctx.ShouldBindJSON(&user)
 	if err != nil {
@@ -38,7 +38,7 @@ func (c *controller) Save(ctx *gin.Context) error {
 	return nil
 }
 
-func (c *controller) ShowAll(ctx *gin.Context) {
+func (c *userController) ShowAll(ctx *gin.Context) {
 	users := c.service.FindAll()
 	data := map[string]interface{}{
 		"title": "users page",
@@ -47,7 +47,7 @@ func (c *controller) ShowAll(ctx *gin.Context) {
 	ctx.HTML(http.StatusOK, "index.html", data)
 }
 
-func (c *controller) Update(ctx *gin.Context) error {
+func (c *userController) Update(ctx *gin.Context) error {
 	var user entity.User
 	err := ctx.ShouldBindJSON(&user)
 	if err != nil {

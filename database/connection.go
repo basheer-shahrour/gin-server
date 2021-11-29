@@ -10,25 +10,26 @@ import (
 	"gorm.io/gorm"
 )
 
-type Database interface {
-	ConnectToDB() *gorm.DB
-	CloseDB()
+type DatabaseConnection interface {
+	Close()
 }
 
-func ConnectToDB() *gorm.DB {
+var Database = NewDatabaseConnection()
+
+func NewDatabaseConnection() *gorm.DB {
 	godotenv.Load()
 	dsn := os.Getenv("DB_CONNECTION_STRING")
 	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	if err != nil {
 		panic(err)
 	}
-	fmt.Printf("connectedToDB\n")
 	db.AutoMigrate(&entity.User{}, &entity.Conversation{})
+	fmt.Printf("connectedToDB\n")
 	return db
 }
 
-func CloseDB(db *gorm.DB) {
-	sqlDB, _ := db.DB()
+func Close() {
+	sqlDB, _ := Database.DB()
 	err := sqlDB.Close()
 	if err != nil {
 		panic(err)

@@ -1,45 +1,39 @@
 package repository
 
 import (
-	"github.com/basheer-shahrour/gin-server/database"
 	"github.com/basheer-shahrour/gin-server/entity"
 	"gorm.io/gorm"
 )
 
 type UserRepository interface {
-	Save(user entity.User)
-	Update(user entity.User)
-	Delete(user entity.User)
-	FindAll() []entity.User
-	CloseDB()
+	SaveUser(user entity.User)
+	UpdateUser(user entity.User)
+	DeleteUser(user entity.User)
+	FindAllUsers() []entity.User
 }
 
-type databaseConnection struct {
-	connection *gorm.DB
+type userRepository struct {
+	dbConnection *gorm.DB
 }
 
-func NewUserRepository() *databaseConnection {
-	return &databaseConnection{connection: database.ConnectToDB()}
+func NewUserRepository(db *gorm.DB) UserRepository {
+	return &userRepository{dbConnection: db}
 }
 
-func (db *databaseConnection) CloseDB() {
-	database.CloseDB(db.connection)
+func (db *userRepository) SaveUser(user entity.User) {
+	db.dbConnection.Create(&user)
 }
 
-func (db *databaseConnection) Save(user entity.User) {
-	db.connection.Create(&user)
+func (db *userRepository) UpdateUser(user entity.User) {
+	db.dbConnection.Save(&user)
 }
 
-func (db *databaseConnection) Update(user entity.User) {
-	db.connection.Save(&user)
+func (db *userRepository) DeleteUser(user entity.User) {
+	db.dbConnection.Delete(&user)
 }
 
-func (db *databaseConnection) Delete(user entity.User) {
-	db.connection.Delete(&user)
-}
-
-func (db *databaseConnection) FindAll() []entity.User {
+func (db *userRepository) FindAllUsers() []entity.User {
 	var users []entity.User
-	db.connection.Set("gorm:auto_preload", true).Find(&users)
+	db.dbConnection.Set("gorm:auto_preload", true).Find(&users)
 	return users
 }

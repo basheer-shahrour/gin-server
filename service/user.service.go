@@ -11,23 +11,23 @@ type UserService interface {
 	Update(user entity.User)
 }
 
-type service struct {
+type userService struct {
 	userRepository repository.UserRepository
 }
 
 func NewUserService(repo repository.UserRepository) UserService {
-	return &service{userRepository: repo}
+	return &userService{userRepository: repo}
 }
 
-func (service *service) Save(user entity.User) entity.User {
-	service.userRepository.Save(user)
+func (service *userService) Save(user entity.User) entity.User {
+	service.userRepository.SaveUser(user)
 	return user
 }
 
-func (service *service) FindAll() []entity.User {
-	return service.userRepository.FindAll()
+func (service *userService) FindAll() []entity.User {
+	return service.userRepository.FindAllUsers()
 }
 
-func (service *service) Update(user entity.User) {
-	service.userRepository.Update(user)
+func (service *userService) Update(user entity.User) {
+	service.userRepository.UpdateUser(user)
 }
